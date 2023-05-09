@@ -1,0 +1,191 @@
+<?php
+session_start();
+	$koneksi=new mysqli("localhost","root","","perpustakaan");
+?>
+
+<html>
+<head>
+<title>Ubah</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="stylesheet" href="css/bootstrap.min.css" />
+<link rel="stylesheet" href="css/bootstrap-responsive.min.css" />
+<link rel="stylesheet" href="css/uniform.css" />
+<link rel="stylesheet" href="css/select2.css" />
+<link rel="stylesheet" href="css/matrix-style.css" />
+<link rel="stylesheet" href="css/matrix-media.css" />
+<link href="font-awesome/css/font-awesome.css" rel="stylesheet" />
+<link href='http://fonts.googleapis.com/css?family=Open+Sans:400,700,800' rel='stylesheet' type='text/css'>
+</head>
+<body>
+
+<!--Header-part-->
+<div id="header">
+<br>
+<img src="img/logoperpus.png" height="0px" width="210px" align="center"/>
+  <h1><a href="admin.php">Perpustakaan Admin</a></h1>
+</div>
+<!--close-Header-part--> 
+
+<!--top-Header-menu-->
+<div id="user-nav" class="navbar navbar-inverse">
+  <ul class="nav">
+    <li class=""><a title=""><i class="icon-user"></i> <span class="text">Selamat Datang , <?=$_SESSION['username']?></span></a></li>
+    <li class=""><a title="" href="http://localhost/chika/loginadmin/login.php"><i class="icon icon-share-alt"></i> <span class="text">Logout</span></a></li>
+	</ul>
+</div>
+<!--close-top-Header-menu-->
+
+<!--sidebar-menu-->
+<div id="sidebar"><a href="admin.php" class="visible-phone"><i class="icon icon-home"></i>Dashboard</a>
+  <ul>
+    <li><a href="admin.php"><span>Dashboard</span></a></li>
+	<li class="active"><a href="anggota.php"><span>Anggota</span></a> </li>
+	<li><a href="kartu.php"><span>Kartu Peminjaman</span></a></li>
+			<li><a href="laporan.php"><span>Laporan</span></a></li>
+	<li class="submenu"> <a href="#"><i class="icon icon-th-list"></i> <span>Data Buku</span> <span class="label label-important">4</span></a>
+      <ul>
+        <li> <a href="buku.php"><span>Buku</span></a> </li>
+        <li><a href="kelompokbuku.php"><span>Kelompok Buku</span></a></li>
+        <li><a href="jenisbuku.php"><span>Jenis Buku</span></a></li>
+		<li><a href="penerbit.php"><span>Penerbit</span></a></li>
+		</ul>
+    </li>
+	<li class="submenu"><a href="#"><i class="icon icon-th-list"></i> <span>Data Pengarang</span><span class="label label-important">2</i></a>
+		<ul>
+		<li><a href="pengarang.php"><span>ID Pengarang</span></a></li>
+		<li><a href="mengarang.php"><span>Pengarang</span></a></li>
+		</ul>
+	<li>
+	<li class="submenu"> <a href="#"><i class="icon icon-th-list"></i> <span>Fakultas & Jurusan</span> <span class="label label-important">2</span></a>
+      <ul>
+        <li> <a href="fakultas.php"><span>Fakultas</span></a> </li>
+        <li><a href="jurusan.php"><span>Jurusan</span></a></li>
+		</ul>
+    </li>
+	<li class="submenu"> <a href="#"><i class="icon icon-th-list"></i> <span>Cakupan</span> <span class="label label-important">5</span></a>
+      <ul>
+        <li><a href="lantai.php"><span>Lantai</span></a> </li>
+		<li><a href="ruang.php"><span>Ruang</span></a></li>
+		<li><a href="blok.php"><span>Blok</span></a></li>
+		<li><a href="rak.php"><span>Rak</span></a></li>
+		<li><a href="tingkat.php">Tingkat</a> </li>
+      </ul>
+    </li>
+</div>
+<!--sidebar-menu-->
+<div id="content">
+  <div id="content-header">
+    <div id="breadcrumb"> <a href="admin.php" title="Go to Dashboard" class="tip-bottom"><i class="icon-home"></i>Dashboard</a> <a href="anggota.php" class="current">Anggota</a> </div>
+    <h1>Ubah</h1>
+  </div>
+  <?php
+	include "config.php";
+	if(isset($_POST['kirim']))
+	{
+		$nim =isset($_POST['nim']) ? $_POST['nim']:'';
+		$id_jurusan=isset($_POST['id_jurusan']) ? $_POST['id_jurusan']:'';
+		$nama_mahasiswa=isset($_POST['nama_mahasiswa']) ? $_POST['nama_mahasiswa']:'';
+		$jk=isset($_POST['jk']) ? $_POST['jk']:'';
+		$email=isset($_POST['email']) ? $_POST['email']:'';
+		$sql="UPDATE mahasiswa SET nim='$nim', id_jurusan='$id_jurusan', nama_mahasiswa='$nama_mahasiswa', jk='$jk', email='$email' WHERE nim='$nim'";
+		$hasil = mysqli_query($koneksi, $sql);
+		if($hasil) 
+		{
+			echo "<script>alert('Data Berhasil Diupdate'); document.location.href='http://localhost/chika/admin/anggota.php'; </script>";
+		} 
+		else 
+		{
+			echo "<script>alert('Proses Gagal'); document.location.href='http://localhost/chika/admin/anggota.php'; </script>";
+		}
+	}
+	?>
+	<?php
+	$nim=isset($_GET['nim']) ? $_GET['nim']:'';
+	$sql="SELECT * FROM mahasiswa WHERE nim='$nim'";
+	$hasil=mysqli_query($koneksi, $sql);
+    echo "
+  <div class='container-fluid'>
+    <hr>
+    <div class='row-fluid'>
+    <div class='span12'>
+      <div class='widget-box'>
+        <div class='widget-title'> <span class='icon'> <i class='icon-align-justify'></i> </span>
+		<h5>Anggota</h5>
+        </div>
+		<hr>";
+		while($data= mysqli_fetch_array($hasil)){
+		echo
+        "<div class='widget-content nopadding'>
+          <form method='post' class='form-horizontal' action='ubahanggota.php' enctype='multipart/form-data'>
+			<div class='control-group'>
+			<label class='control-label'>NIM :</label>
+              <div class='controls'>
+                <input type='text' name='nim' class='span11'  value='".$data['nim']."'/>
+              </div>
+            </div>
+			<label class='control-label'>
+              Jurusan :</label>
+			  <div class='controls'>
+              <select class='form-control' name='id_jurusan' required>
+			  <option value=''>Pilih Jurusan</option>";
+			  
+			  $sql2="SELECT * FROM jurusan";
+				$hasil2=mysqli_query($koneksi, $sql2);
+				if (mysqli_num_rows($hasil2) > 0) {
+				while ($data2= mysqli_fetch_array($hasil2)){
+					echo"
+					<option value='".$data2['id_jurusan']."'>";
+					echo $data2['nama_jurusan']; "</option>";
+					} } 
+					echo"
+			</select>
+			</div>
+            <div class='control-group'>
+              <label class='control-label'>Nama :</label>
+              <div class='controls'>
+                <input type='text' name='nama_mahasiswa' class='span11'  value='".$data['nama_mahasiswa']."'/>
+              </div>
+            </div>
+			<div class='control-group'>
+			<label class='control-label'>Jenis Kelamin :</label>
+              <div class='controls'>
+                <input type='radio' name='jk' class='span11'  value='".$data['jk']='Pria'."'/>Pria
+				<input type='radio' name='jk' class='span11'  value='".$data['jk']='Wanita'."'/>Wanita
+              </div>
+            </div>
+            <div class='control-group'>
+              <label class='control-label'>Email  :</label>
+              <div class='controls'>
+                <input type='text' name='email' class='span11'  value='".$data['email']."'/>
+              </div>
+            </div>
+            <div class='form-actions'>
+              <button class='btn btn-primary' name='kirim'>Ubah</button>
+			  <a href='anggota.php' class='btn btn-warning'> Kembali </a>
+            </div>
+          </form>";
+		  }
+			mysqli_close($koneksi);
+			?>
+        </div>
+    </div>
+  </div>
+  </div>
+  </div>
+</div>
+<!--Footer-part-->
+<div class="row-fluid">
+  <div id="footer" class="span12"> 2013 &copy; Matrix Admin. Brought to you by <a href="http://themedesigner.in">Themedesigner.in</a> </div>
+</div>
+<!--end-Footer-part-->
+<script src="js/jquery.min.js"></script> 
+<script src="js/jquery.ui.custom.js"></script> 
+<script src="js/bootstrap.min.js"></script> 
+<script src="js/jquery.uniform.js"></script> 
+<script src="js/select2.min.js"></script> 
+<script src="js/jquery.dataTables.min.js"></script> 
+<script src="js/matrix.js"></script> 
+<script src="js/matrix.tables.js"></script>
+</body>
+</html>
